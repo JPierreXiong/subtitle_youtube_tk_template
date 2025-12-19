@@ -1,5 +1,10 @@
 # ShipAny Template Two
 
+## Requirements
+
+- Node.js >= 22.21.1
+- pnpm >= 8.0.0
+
 ## Getting Started
 
 read [ShipAny Document](https://shipany.ai/docs/quick-start) to start your AI SaaS project.

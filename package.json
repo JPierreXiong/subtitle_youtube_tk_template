@@ -164,5 +164,9 @@
       "@types/react": "19.2.2",
       "@types/react-dom": "19.2.2"
     }
+  },
+  "engines": {
+    "node": ">=22.21.1",
+    "pnpm": ">=8.0.0"
   }
 }
