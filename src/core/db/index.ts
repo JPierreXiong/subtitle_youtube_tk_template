@@ -6,11 +6,15 @@ import { createClient } from '@libsql/client';
 import { envConfigs } from '@/config';
 import { isCloudflareWorker } from '@/shared/lib/env';
 
+// Use 'any' type to allow both PostgreSQL and SQLite drizzle instances
+// Both have compatible query APIs (.select(), .from(), etc.)
+type Database = any;
+
 // Global database connection instance (singleton pattern)
-let dbInstance: ReturnType<typeof drizzle> | ReturnType<typeof drizzleSQLite> | null = null;
+let dbInstance: Database | null = null;
 let client: ReturnType<typeof postgres> | ReturnType<typeof createClient> | null = null;
 
-export function db() {
+export function db(): Database {
   let databaseUrl = envConfigs.database_url;
   const provider = envConfigs.database_provider;
 
@@ -105,7 +109,7 @@ export function db() {
     connect_timeout: 10,
   });
 
-  return drizzle({ client: serverlessClient });
+  return drizzle({ client: serverlessClient }) as Database;
 }
 
 // Optional: Function to close database connection (useful for testing or graceful shutdown)
