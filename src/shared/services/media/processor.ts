@@ -400,8 +400,9 @@ export class MediaProcessor {
    */
   parseSrtString(srtContent: string): SrtItem[] {
     const parser = new Parser();
-    // parser.fromSrt may return objects with additional properties, but we only need the SrtItem fields
-    return parser.fromSrt(srtContent) as SrtItem[];
+    // parser.fromSrt returns objects with string id and additional properties (startSeconds/endSeconds)
+    // We use double cast to bypass strict type overlap check since we know the structure is compatible at runtime
+    return parser.fromSrt(srtContent) as unknown as SrtItem[];
   }
 
   /**
