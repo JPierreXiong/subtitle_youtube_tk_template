@@ -1,11 +1,8 @@
 {
   "header": {
     "brand": {
-      "title": "ShipAny Two",
-      "logo": {
-        "src": "/logo.png",
-        "alt": "ShipAny Two"
-      },
+      "title": "Subtitle TK",
+      "logo": null,
       "url": "/admin"
     },
     "show_trigger": false
@@ -65,11 +62,6 @@
               "title": "订阅",
               "url": "/admin/subscriptions",
               "icon": "CreditCard"
-            },
-            {
-              "title": "积分",
-              "url": "/admin/credits",
-              "icon": "Coins"
             }
           ]
         }

@@ -2,63 +2,20 @@
   "header": {
     "id": "header",
     "brand": {
-      "title": "ShipAny Two",
-      "logo": {
-        "src": "/logo.png",
-        "alt": "ShipAny Two"
-      },
+      "title": "Subtitle ToolKit",
       "url": "/"
     },
     "nav": {
       "items": [
         {
-          "title": "Features",
-          "url": "/#features",
-          "icon": "Sparkles"
-        },
-        {
-          "title": "Showcases",
-          "url": "/showcases",
-          "icon": "Box"
+          "title": "Media Extractor",
+          "url": "/ai-media-extractor",
+          "icon": "Video"
         },
         {
           "title": "Pricing",
           "url": "/pricing",
           "icon": "DollarSign"
-        },
-        {
-          "title": "AI",
-          "icon": "RiRobot2Line",
-          "children": [
-            {
-              "title": "AI Image Generator",
-              "description": "Use AI to generate images",
-              "url": "/ai-image-generator",
-              "icon": "RiImage2Line"
-            },
-            {
-              "title": "AI Music Generator",
-              "description": "Use AI to generate music",
-              "url": "/ai-music-generator",
-              "icon": "RiMusic2Line"
-            },
-            {
-              "title": "AI Chatbot",
-              "description": "Chat with AI chatbot",
-              "url": "/chat",
-              "icon": "RiMessage2Line"
-            }
-          ]
-        },
-        {
-          "title": "Blog",
-          "url": "/blog",
-          "icon": "Newspaper"
-        },
-        {
-          "title": "Docs",
-          "url": "/docs",
-          "icon": "BookOpenText"
         }
       ]
     },
@@ -68,6 +25,11 @@
       "show_credits": true,
       "show_sign_out": true,
       "items": [
+        {
+          "title": "Extract Media",
+          "url": "/ai-media-extractor",
+          "icon": "Video"
+        },
         {
           "title": "Billing",
           "url": "/settings/billing",
@@ -86,15 +48,15 @@
   },
   "hero": {
     "id": "hero",
-    "title": "Ship AI Startups in hours, not days",
-    "highlight_text": "in hours",
-    "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups.<br/>Ship Fast with a variety of templates and components.",
+    "title": "SubtitleTK: Extract the Essence. Translate the Message. Reach the World",
+    "highlight_text": "",
+    "description": "<strong>Supercharge your content reach by turning any YouTube or TikTok video into a global masterpiece with one-click AI subtitling.</strong>",
     "announcement": {
       "badge": "New",
-      "title": "🎉 ShipAny Template Two",
+      "title": "🎉 Subtitle TK",
       "url": "/pricing"
     },
-    "tip": "🎁 Special offer for the first 1000 users",
+    "tip": "",
     "buttons": [
       {
         "title": "Get Started",
@@ -102,17 +64,10 @@
         "url": "/pricing",
         "target": "_self",
         "variant": "default"
-      },
-      {
-        "title": "Read Document",
-        "icon": "BookOpenText",
-        "url": "/docs",
-        "target": "_blank",
-        "variant": "outline"
       }
     ],
     "show_avatars": true,
-    "avatars_tip": "999+ users are using ShipAny",
+    "avatars_tip": "999+ users are using Subtitle TK",
     "show_award": false,
     "image": {
       "src": "/imgs/features/admin.png",
@@ -124,7 +79,7 @@
     }
   },
   "logos": {
-    "title": "ShipAny is built on the shoulders of giants",
+    "title": "Subtitle TK is built on the shoulders of giants",
     "items": [
       {
         "title": "Next.js",
@@ -165,9 +120,9 @@
   },
   "introduce": {
     "id": "introduce",
-    "title": "What is ShipAny",
+    "title": "What is Subtitle TK",
     "label": "Introduce",
-    "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups, including templates, components, and documentation.",
+    "description": "Subtitle TK is a NextJS boilerplate for building AI SaaS startups, including templates, components, and documentation.",
     "image": {
       "src": "/imgs/features/landing-page.png",
       "alt": "introduce"
@@ -213,7 +168,7 @@
   },
   "benefits": {
     "id": "benefits",
-    "title": "Why Choose ShipAny",
+    "title": "Why Choose Subtitle TK",
     "label": "Benefits",
     "description": "Get everything you need to launch your AI startup - from ready-to-use templates to technical support.",
     "items": [
@@ -248,7 +203,7 @@
   },
   "usage": {
     "id": "usage",
-    "title": "How to Launch with ShipAny",
+    "title": "How to Launch with Subtitle TK",
     "description": "Get your AI SaaS startup running in three simple steps:",
     "image": {
       "src": "/imgs/features/1.png",
@@ -258,8 +213,8 @@
     "text_align": "center",
     "items": [
       {
-        "title": "Get ShipAny",
-        "description": "Buy ShipAny with a one-time payment. Check your email for the code and documentation.",
+        "title": "Get Subtitle TK",
+        "description": "Buy Subtitle TK with a one-time payment. Check your email for the code and documentation.",
         "image": {
           "src": "/imgs/features/5.png",
           "alt": "usage"
@@ -267,7 +222,7 @@
       },
       {
         "title": "Start Your Project",
-        "description": "Read the documentation and clone the code of ShipAny. Start building your AI SaaS startup.",
+        "description": "Read the documentation and clone the code of Subtitle TK. Start building your AI SaaS startup.",
         "image": {
           "src": "/imgs/features/6.png",
           "alt": "usage"
@@ -293,7 +248,7 @@
   },
   "features": {
     "id": "features",
-    "title": "Key Features of ShipAny",
+    "title": "Key Features of Subtitle TK",
     "description": "Everything you need to launch your AI SaaS startup quickly and efficiently.",
     "items": [
       {
@@ -330,7 +285,7 @@
   },
   "stats": {
     "id": "stats",
-    "title": "People Love ShipAny",
+    "title": "People Love Subtitle TK",
     "description": "for it's easy to use and fast to ship.",
     "items": [
       {
@@ -349,13 +304,13 @@
   },
   "testimonials": {
     "id": "testimonials",
-    "title": "What Users Say About ShipAny",
-    "description": "Hear from developers and founders who launched their AI startups with ShipAny.",
+    "title": "What Users Say About Subtitle TK",
+    "description": "Hear from content creators and businesses who transformed their video content with Subtitle TK.",
     "items": [
       {
         "name": "David Chen",
-        "role": "Founder of AIWallpaper.shop",
-        "quote": "ShipAny saved us months of development time. We launched our AI wallpaper business in just 2 days and got our first paying customer within a week!",
+        "role": "YouTube Content Creator",
+        "quote": "Subtitle TK transformed my YouTube channel! I can now reach global audiences with accurate subtitles in 12 languages. My views increased by 300% after adding multilingual subtitles.",
         "image": {
           "src": "/imgs/avatars/1.png",
           "alt": "david"
@@ -363,8 +318,8 @@
       },
       {
         "name": "Rachel Kim",
-        "role": "CTO at HeyBeauty.ai",
-        "quote": "The pre-built AI infrastructure is a game-changer. We didn't have to worry about architecture - just focused on our AI beauty tech and went live fast.",
+        "role": "TikTok Influencer",
+        "quote": "One-click subtitle extraction and translation saved me hours every week. My TikTok videos now connect with viewers worldwide, and my engagement has skyrocketed!",
         "image": {
           "src": "/imgs/avatars/2.png",
           "alt": "rachel"
@@ -372,8 +327,8 @@
       },
       {
         "name": "Marcus Thompson",
-        "role": "Solo Developer",
-        "quote": "As a solo developer, ShipAny gave me everything I needed - auth, payments, AI integration, and beautiful UI. Launched my SaaS in a weekend!",
+        "role": "Video Production Agency Owner",
+        "quote": "As a small agency, Subtitle TK gives us enterprise-level subtitle capabilities at a fraction of the cost. We process hundreds of videos monthly with perfect accuracy.",
         "image": {
           "src": "/imgs/avatars/3.png",
           "alt": "marcus"
@@ -381,8 +336,8 @@
       },
       {
         "name": "Sofia Garcia",
-        "role": "CEO of Melodisco",
-        "quote": "The templates are production-ready and highly customizable. We built our AI music platform in hours instead of months. Incredible time-to-market!",
+        "role": "E-Learning Platform Manager",
+        "quote": "Subtitle TK made our educational content accessible globally. Students from 50+ countries can now learn from our courses with accurate translations. Game-changer!",
         "image": {
           "src": "/imgs/avatars/4.png",
           "alt": "sofia"
@@ -390,8 +345,8 @@
       },
       {
         "name": "James Wilson",
-        "role": "Tech Lead at GPTs.works",
-        "quote": "ShipAny's infrastructure is rock-solid. We scaled from 0 to 10k users without touching the backend. Best investment for our AI startup.",
+        "role": "Marketing Director",
+        "quote": "The AI-powered translation is incredibly accurate. We localize our marketing videos for different markets in minutes instead of days. ROI is through the roof!",
         "image": {
           "src": "/imgs/avatars/5.png",
           "alt": "james"
@@ -399,8 +354,8 @@
       },
       {
         "name": "Anna Zhang",
-        "role": "Startup Founder",
-        "quote": "From idea to launch in 3 days! ShipAny's templates and deployment tools made it possible to test our AI business concept incredibly fast.",
+        "role": "Content Strategist",
+        "quote": "Subtitle TK's one-click solution turned our YouTube and TikTok content into a global powerhouse. Our international audience grew 500% in just 3 months!",
         "image": {
           "src": "/imgs/avatars/6.png",
           "alt": "anna"
@@ -410,44 +365,44 @@
   },
   "faq": {
     "id": "faq",
-    "title": "Frequently Asked Questions About ShipAny",
-    "description": "Have another question? Contact us on Discord or by email.",
-    "tip": "Can't find what you're looking for? Contact our <a href='https://discord.gg/HQNnrzjZQS' target='_blank' class='text-primary font-medium hover:underline'>customer support team</a>",
+    "title": "Frequently Asked Questions",
+    "description": "Have another question? Contact us by email.",
+    "tip": "Can't find what you're looking for? Contact our <a href='mailto:feedback@subtitleTK.com' class='text-primary font-medium hover:underline'>customer support team</a>",
     "items": [
       {
-        "question": "What exactly is ShipAny and how does it work?",
-        "answer": "ShipAny is a comprehensive NextJS boilerplate designed specifically for building AI SaaS startups. It provides ready-to-use templates, infrastructure setup, and deployment tools that help you launch your AI business in hours instead of days."
+        "question": "How much does it cost to use SubtitleTK?",
+        "answer": "SubtitleTK is a high-performance digital toolkit designed to extract and translate subtitles from YouTube and TikTok videos. We believe in simple, transparent pricing. Our current model is: 1 Credit for Subtitle Extraction. 1 Credit for Video Download (TikTok). 1 Credit for AI Translation services. (Note: Each specific action consumes exactly one credit, making it easy to manage your balance.)"
       },
       {
-        "question": "Do I need advanced technical skills to use ShipAny?",
-        "answer": "While basic programming knowledge is helpful, ShipAny is designed to be developer-friendly. Our templates and documentation make it easy to get started, even if you're not an expert in AI or cloud infrastructure."
+        "question": "What happens if an extraction fails?",
+        "answer": "At SubtitleTK, we value your trust. If a video is restricted, private, or the system fails to process it, our Automatic Refund Policy ensures that your credit is immediately returned to your account."
       },
       {
-        "question": "What types of AI SaaS can I build with ShipAny?",
-        "answer": "ShipAny supports a wide range of AI applications, from content generation to data analysis tools. Our templates cover popular use cases like AI chatbots, content generators, image processing apps, and more."
+        "question": "How many languages can I translate into?",
+        "answer": "SubtitleTK supports 12+ major global languages for AI translation, including English, Chinese, Spanish, French, German, Japanese, and more. This allows you to localize any viral content for your specific target audience."
       },
       {
-        "question": "How long does it typically take to launch with ShipAny?",
-        "answer": "With ShipAny, you can have a working prototype in hours and a production-ready application in hours. Our one-click deployment and pre-configured infrastructure significantly reduce the traditional months-long development cycle."
+        "question": "Can I preview the results before downloading?",
+        "answer": "Yes. After the processing reaches 100%, you can visit your Activity dashboard to see a preview table of the first 10 subtitle segments. Once you are satisfied, you can download the full .SRT file."
       },
       {
-        "question": "What's included in the ShipAny infrastructure?",
-        "answer": "ShipAny provides a complete infrastructure stack including authentication, database setup, API integration, payment processing, and scalable cloud deployment. Everything is pre-configured following industry best practices."
+        "question": "Why is the translation process sometimes slower than extraction?",
+        "answer": "While extraction is nearly instant, AI Translation is processed in smart chunks (4,000 characters each) to maintain high linguistic accuracy and bypass technical limits. For long videos, this may take 1-2 minutes to ensure every word is perfectly translated."
       },
       {
-        "question": "Can I customize the templates to match my brand?",
-        "answer": "Absolutely! All ShipAny templates are fully customizable. You can modify the design, features, and functionality to match your brand identity and specific business requirements while maintaining the robust underlying infrastructure."
+        "question": "Where are my files stored?",
+        "answer": "Your processed files and video metadata are stored securely in our private cloud storage. You can access your history and download your files at any time via the Activity tab in your dashboard."
       }
     ]
   },
   "cta": {
     "id": "cta",
     "title": "Ship your first AI SaaS Startup",
-    "description": "Start from here, ship with ShipAny.",
+    "description": "Start from here, ship with Subtitle TK.",
     "buttons": [
       {
-        "title": "Get ShipAny",
-        "url": "https://shipany.ai",
+        "title": "Get Subtitle TK",
+        "url": "https://www.subtitletk.app",
         "target": "_blank",
         "icon": "Zap"
       },
@@ -463,7 +418,7 @@
   "subscribe": {
     "id": "subscribe",
     "title": "Subscribe to our newsletter",
-    "description": "Get the latest news and updates from ShipAny.",
+    "description": "Get the latest news and updates from Subtitle TK.",
     "submit": {
       "input": {
         "placeholder": "Enter your email"
@@ -477,12 +432,8 @@
   "footer": {
     "id": "footer",
     "brand": {
-      "title": "ShipAny Two",
-      "description": "ShipAny is a NextJS boilerplate for building AI SaaS startups. Ship Fast with a variety of templates and components.",
-      "logo": {
-        "src": "/logo.png",
-        "alt": "ShipAny Two"
-      },
+      "title": "Subtitle TK",
+      "description": "SubtitleTK is a high-performance digital toolkit designed to extract and translate subtitles from YouTube and TikTok videos. We believe in simple, transparent pricing.",
       "url": "/"
     },
     "nav": {
@@ -491,38 +442,8 @@
           "title": "About",
           "children": [
             {
-              "title": "Features",
-              "url": "/#features",
-              "target": "_self"
-            },
-            {
-              "title": "Showcases",
-              "url": "/showcases",
-              "target": "_self"
-            },
-            {
               "title": "Pricing",
               "url": "/pricing",
-              "target": "_self"
-            }
-          ]
-        },
-        {
-          "title": "Resources",
-          "children": [
-            {
-              "title": "Documents",
-              "url": "/docs",
-              "target": "_self"
-            },
-            {
-              "title": "Blog",
-              "url": "/blog",
-              "target": "_self"
-            },
-            {
-              "title": "Chat",
-              "url": "/chat",
               "target": "_self"
             }
           ]
@@ -531,18 +452,13 @@
           "title": "Friends",
           "children": [
             {
-              "title": "ShipAny",
-              "url": "https://shipany.ai",
+              "title": "YouTube",
+              "url": "https://www.youtube.com",
               "target": "_blank"
             },
             {
-              "title": "ThinkAny",
-              "url": "https://thinkany.ai",
-              "target": "_blank"
-            },
-            {
-              "title": "MCP.so",
-              "url": "https://mcp.so",
+              "title": "TikTok",
+              "url": "https://www.tiktok.com",
               "target": "_blank"
             }
           ]

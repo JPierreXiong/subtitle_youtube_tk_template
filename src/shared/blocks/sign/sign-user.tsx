@@ -6,7 +6,7 @@ import { Coins, LayoutDashboard, Loader2, LogOut, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { signOut } from '@/core/auth/client';
-import { Link, useRouter } from '@/core/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/core/i18n/navigation';
 import {
   Avatar,
   AvatarFallback,
@@ -39,6 +39,11 @@ export function SignUser({
   const t = useTranslations('common.sign');
   const { isCheckSign, user, setIsShowSignModal } = useAppContext();
   const router = useRouter();
+  const pathname = usePathname();
+  
+  // Hide credits on landing page (homepage) only
+  const isLandingPage = pathname === '/' || pathname === '/en' || pathname === '/zh' || pathname === '/fr';
+  const shouldShowCredits = userNav?.show_credits && !isLandingPage;
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -80,7 +85,7 @@ export function SignUser({
               </>
             )}
 
-            {userNav?.show_credits && (
+            {shouldShowCredits && (
               <>
                 <DropdownMenuItem asChild>
                   <Link

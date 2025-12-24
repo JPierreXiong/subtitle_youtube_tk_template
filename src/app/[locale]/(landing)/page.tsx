@@ -17,16 +17,21 @@ export default async function LandingPage({
   // build page params
   const page: Landing = {
     hero: t.raw('hero'),
-    logos: t.raw('logos'),
-    introduce: t.raw('introduce'),
-    benefits: t.raw('benefits'),
-    usage: t.raw('usage'),
-    features: t.raw('features'),
-    stats: t.raw('stats'),
-    subscribe: t.raw('subscribe'),
+    // 明确设为 undefined 阻止 UI 渲染
+    logos: undefined,
+    introduce: undefined,
+    benefits: undefined,
+    usage: undefined,
+    features: undefined,
+    stats: undefined,
+    
+    // 保留：用户评价功能（紧跟在 Hero 后面）
     testimonials: t.raw('testimonials'),
+    
+    // 可选保留的区块
+    subscribe: t.raw('subscribe'),
     faq: t.raw('faq'),
-    cta: t.raw('cta'),
+    cta: undefined, // 已隐藏 CTA 区块
   };
 
   // load page component

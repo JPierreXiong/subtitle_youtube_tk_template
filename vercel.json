@@ -20,6 +20,9 @@
     },
     "src/app/api/storage/**/*.ts": {
       "maxDuration": 30
+    },
+    "src/app/api/media/**/*.ts": {
+      "maxDuration": 180
     }
   },
   "crons": []

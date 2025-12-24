@@ -2,11 +2,8 @@
   "sidebar": {
     "header": {
       "brand": {
-        "title": "ShipAny Chat",
-        "logo": {
-          "src": "/logo.png",
-          "alt": "ShipAny Chat"
-        },
+        "title": "Subtitle TK Chat",
+        "logo": null,
         "url": "/chat"
       },
       "show_trigger": false

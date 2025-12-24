@@ -53,7 +53,17 @@ export function SocialProviders({
           setLoading(false);
           setIsShowSignModal(false);
         },
-        onSuccess: (ctx) => {},
+        onSuccess: async (ctx) => {
+          // Grant free plan credits to new user (if they don't have any)
+          try {
+            await fetch('/api/user/grant-free-credits', {
+              method: 'POST',
+            });
+          } catch (error) {
+            // Silently fail - credits grant is not critical for signup flow
+            console.log('Failed to grant free credits:', error);
+          }
+        },
         onError: (e: any) => {
           toast.error(e?.error?.message || 'sign in failed');
           setLoading(false);

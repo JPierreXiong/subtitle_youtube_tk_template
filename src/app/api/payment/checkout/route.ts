@@ -60,7 +60,17 @@ export async function POST(req: Request) {
       paymentProviderName = configs.default_payment_provider;
     }
     if (!paymentProviderName) {
-      return respErr('no payment provider configured');
+      // Check which payment providers are available
+      const availableProviders: string[] = [];
+      if (configs.stripe_enabled === 'true') availableProviders.push('Stripe');
+      if (configs.creem_enabled === 'true') availableProviders.push('Creem');
+      if (configs.paypal_enabled === 'true') availableProviders.push('PayPal');
+      
+      const errorMessage = availableProviders.length > 0
+        ? `No default payment provider configured. Available providers: ${availableProviders.join(', ')}. Please configure a default payment provider in admin settings.`
+        : 'No payment provider configured. Please enable and configure at least one payment provider (Stripe, Creem, or PayPal) in admin settings.';
+      
+      return respErr(errorMessage);
     }
 
     // Validate payment provider against allowed providers
@@ -97,7 +107,51 @@ export async function POST(req: Request) {
 
     const paymentProvider = paymentService.getProvider(paymentProviderName);
     if (!paymentProvider || !paymentProvider.name) {
-      return respErr('no payment provider configured');
+      // Check which payment providers are enabled but not properly configured
+      const enabledProviders: string[] = [];
+      const misconfiguredProviders: string[] = [];
+      
+      if (configs.stripe_enabled === 'true') {
+        if (configs.stripe_secret_key && configs.stripe_publishable_key) {
+          enabledProviders.push('Stripe');
+        } else {
+          misconfiguredProviders.push('Stripe (missing API keys)');
+        }
+      }
+      
+      if (configs.creem_enabled === 'true') {
+        if (configs.creem_api_key) {
+          enabledProviders.push('Creem');
+        } else {
+          misconfiguredProviders.push('Creem (missing API key)');
+        }
+      }
+      
+      if (configs.paypal_enabled === 'true') {
+        if (configs.paypal_client_id && configs.paypal_client_secret) {
+          enabledProviders.push('PayPal');
+        } else {
+          misconfiguredProviders.push('PayPal (missing credentials)');
+        }
+      }
+      
+      let errorMessage = `Payment provider "${paymentProviderName}" is not available. `;
+      
+      if (enabledProviders.length > 0) {
+        errorMessage += `Available providers: ${enabledProviders.join(', ')}. `;
+      }
+      
+      if (misconfiguredProviders.length > 0) {
+        errorMessage += `Misconfigured providers: ${misconfiguredProviders.join(', ')}. `;
+      }
+      
+      if (enabledProviders.length === 0 && misconfiguredProviders.length === 0) {
+        errorMessage += 'Please enable and configure at least one payment provider in admin settings.';
+      } else {
+        errorMessage += 'Please check your payment provider configuration in admin settings.';
+      }
+      
+      return respErr(errorMessage);
     }
 
     // checkout currency and amount - calculate from server-side data only (never trust client input)

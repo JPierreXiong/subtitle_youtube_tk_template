@@ -87,7 +87,7 @@ export function Hero({
                 {texts[1]}
               </h1>
             ) : (
-              <h1 className="text-foreground text-5xl font-semibold text-balance sm:mt-12 sm:text-7xl">
+              <h1 className="text-foreground text-3xl font-semibold text-balance sm:mt-12 sm:text-4xl line-clamp-2">
                 {hero.title}
               </h1>
             )}
@@ -95,7 +95,7 @@ export function Hero({
 
           <motion.p
             {...createFadeInVariant(0.3)}
-            className="text-muted-foreground mt-8 mb-8 text-lg text-balance"
+            className="text-muted-foreground mt-8 mb-8 text-xl sm:text-2xl text-balance line-clamp-2"
             dangerouslySetInnerHTML={{ __html: hero.description ?? '' }}
           />
 

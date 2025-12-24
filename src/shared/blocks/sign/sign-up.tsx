@@ -100,9 +100,20 @@ export function SignUp({
         onResponse: (ctx) => {
           setLoading(false);
         },
-        onSuccess: (ctx) => {
+        onSuccess: async (ctx) => {
           // report affiliate
           reportAffiliate({ userEmail: email });
+          
+          // Grant free plan credits to new user
+          try {
+            await fetch('/api/user/grant-free-credits', {
+              method: 'POST',
+            });
+          } catch (error) {
+            // Silently fail - credits grant is not critical for signup flow
+            console.log('Failed to grant free credits:', error);
+          }
+          
           router.push(callbackUrl);
         },
         onError: (e: any) => {

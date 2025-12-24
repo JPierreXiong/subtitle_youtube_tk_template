@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "title": "Video Subtitle Extractor",
+    "description": "Extract and translate subtitles from YouTube and TikTok videos"
+  },
+  "page": {
+    "title": "Video Subtitle Extractor",
+    "description": "Extract and translate subtitles from YouTube and TikTok videos"
+  },
+  "extractor": {
+    "title": "Media Extractor",
+    "url_label": "Video URL",
+    "url_placeholder": "Paste YouTube or TikTok URL here...",
+    "source_lang_label": "Source Language",
+    "source_lang_placeholder": "Auto-detected",
+    "target_lang_label": "Target Language",
+    "target_lang_placeholder": "Select language",
+    "output_type_label": "Output Type",
+    "output_type_subtitle": "Subtitle",
+    "output_type_video": "Video (TikTok only)",
+    "extract": "Extract",
+    "extracting": "Extracting...",
+    "translating": "Translating...",
+    "completed": "Completed",
+    "failed": "Failed",
+    "loading": "Loading...",
+    "sign_in_to_extract": "Sign In to Extract Subtitles",
+    "credits_cost": "{credits} credits cost",
+    "credits_remaining": "{credits} credits remaining",
+    "buy_credits": "Buy Credits",
+    "extraction_progress": "Extraction Progress",
+    "time_cost": "This may take up to 3 minutes...",
+    "translation_time_cost": "Translation may take up to 1 minute...",
+    "download_srt": "Download SRT",
+    "download_video": "Download Video",
+    "download_native_srt": "Download Native SRT",
+    "download_translated_srt": "Download Translated SRT",
+    "no_result": "No Result",
+    "error_message": "Error: {message}",
+    "invalid_url": "Invalid URL. Only YouTube and TikTok are supported.",
+    "active_task": "You already have an active task. Please wait for it to complete.",
+    "insufficient_credits": "Insufficient credits",
+    "languages": {
+      "en": "English",
+      "zh-CN": "Chinese (Simplified)",
+      "es": "Spanish",
+      "fr": "French",
+      "de": "German",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "pt": "Portuguese",
+      "ru": "Russian",
+      "it": "Italian",
+      "ar": "Arabic",
+      "hi": "Hindi"
+    },
+    "cost_info": "* Cost: 10-15 Credits per request (10 for extraction, 15 for video download or translation)"
+  }
+}
+

@@ -52,3 +52,9 @@ git push -u origin main
 git remote set-url origin git@github.com:JPierreXiong/subtitle_youtube_tk_template.git
 ```
 
+
+
+
+
+
+

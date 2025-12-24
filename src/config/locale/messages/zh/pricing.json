@@ -5,9 +5,9 @@
   },
   "pricing": {
     "id": "pricing",
-    "sr_only_title": "ShipAny 价格表",
+    "sr_only_title": "Subtitle TK 价格表",
     "title": "价格",
-    "description": "获取 ShipAny 的全部功能，极速交付你的 AI SaaS 创业项目。",
+    "description": "获取 Subtitle TK 的全部功能，极速交付你的 AI SaaS 创业项目。",
     "groups": [
       {
         "name": "one-time",
@@ -18,10 +18,6 @@
         "title": "包月",
         "is_featured": true,
         "label": "立省15%"
-      },
-      {
-        "name": "yearly",
-        "title": "包年"
       }
     ],
     "items": [
@@ -56,12 +52,12 @@
         "is_featured": false,
         "tip": "一次付费，畅享无限项目部署！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "获取 Subtitle TK",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "starter",
-        "product_name": "ShipAny 模板入门版",
+        "product_name": "Subtitle TK 模板入门版",
         "credits": 100,
         "valid_days": 30,
         "group": "one-time"
@@ -99,12 +95,12 @@
         "is_featured": true,
         "tip": "一次付费，畅享无限项目部署！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "获取 Subtitle TK",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "standard",
-        "product_name": "ShipAny 模板标准版",
+        "product_name": "Subtitle TK 模板标准版",
         "credits": 200,
         "valid_days": 90,
         "group": "one-time"
@@ -140,217 +136,118 @@
         "is_featured": false,
         "tip": "一次付费，畅享无限项目部署！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "获取 Subtitle TK",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "premium",
-        "product_name": "ShipAny 模板高级版",
+        "product_name": "Subtitle TK 模板高级版",
         "credits": 300,
         "valid_days": 365,
         "group": "one-time"
       },
       {
-        "title": "入门版",
-        "description": "开启你的第一个 SaaS 创业项目。",
+        "title": "免费版",
+        "description": "免费测试 YouTube 或 TikTok 链接。",
         "features_title": "包含",
         "features": [
-          "100 积分，有效期 1 个月",
-          "NextJS 项目模板",
-          "SEO 友好结构",
-          "支持 Stripe 支付",
-          "Supabase 数据存储",
-          "Google Oauth & 一键登录",
-          "多语言（i18n）支持"
+          "50 积分，有效期 7 天",
+          "YouTube 和 TikTok 字幕提取（每次扣 10 积分）",
+          "视频下载（每次扣 15 积分）",
+          "字幕提取 + AI 翻译（每次扣 15 积分）",
+          "翻译字数限制：1000 字",
+          "支持 12 种语言",
+          "文件保留不超过 24 小时"
         ],
         "interval": "month",
-        "amount": 8900,
+        "amount": 0,
         "currency": "USD",
-        "price": "$89",
-        "original_price": "$99",
-        "unit": "/ 月",
+        "price": "免费",
+        "original_price": "",
+        "unit": "",
         "is_featured": false,
-        "tip": "按月付费，畅享无限项目部署！",
+        "tip": "完美适合试用我们的服务！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "免费开始",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "starter-monthly",
-        "product_name": "ShipAny 模板入门版包月",
-        "credits": 100,
-        "valid_days": 30,
+        "product_name": "免费版",
+        "credits": 50,
+        "valid_days": 7,
         "group": "monthly",
-        "plan_name": "入门版"
+        "plan_name": "免费版"
       },
       {
-        "title": "标准版",
-        "description": "快速交付你的 SaaS 创业项目。",
+        "title": "专业版",
+        "description": "适合专业内容创作者和企业使用。",
         "label": "热门",
-        "features_title": "包含入门版功能，此外",
+        "features_title": "包含",
         "features": [
-          "200 积分，有效期 1 个月",
-          "支持 Vercel 或 Cloudflare 部署",
-          "自动生成隐私政策&服务条款",
-          "集成 Google Analytics",
-          "集成 Google Search Console",
-          "Discord 技术社区",
-          "首个上线项目技术支持",
-          "终身免费更新"
+          "10000 积分，有效期 30 天",
+          "YouTube 和 TikTok 字幕提取（每次扣 10 积分）",
+          "视频下载（每次扣 15 积分）",
+          "字幕提取 + AI 翻译（每次扣 15 积分）",
+          "翻译字数限制：20000 字",
+          "支持 12 种语言",
+          "1GB 云盘存储",
+          "文件可长期保留，失效 3 天后将不再保留"
         ],
         "interval": "month",
-        "amount": 16900,
+        "amount": 1990,
         "currency": "USD",
-        "price": "$169",
-        "original_price": "$199",
+        "price": "$19.9",
+        "original_price": "",
         "unit": "/ 月",
         "is_featured": true,
-        "tip": "按月付费，极速上线你的 SaaS 项目。",
+        "tip": "完美适合专业使用！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "获取专业版",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "standard-monthly",
-        "product_name": "ShipAny 模板标准版包月",
-        "credits": 200,
+        "product_name": "专业版",
+        "credits": 10000,
         "valid_days": 30,
         "group": "monthly",
-        "plan_name": "标准版"
+        "plan_name": "专业版"
       },
       {
-        "title": "高级版",
-        "description": "交付任意 AI SaaS 创业项目。",
-        "features_title": "包含标准版功能，此外",
+        "title": "Ultima",
+        "description": "适合高级用户和大规模运营。",
+        "features_title": "包含",
         "features": [
-          "300 积分，有效期 1 个月",
-          "内置 AI 业务功能",
-          "用户中心",
-          "积分系统",
-          "为你的 SaaS 售卖 API",
-          "后台管理系统",
-          "优先技术支持"
+          "50000 积分，有效期 30 天",
+          "2500 个 YouTube 链接和 2500 个 TikTok 链接",
+          "YouTube 和 TikTok 字幕提取（每次扣 10 积分）",
+          "5000 次文件或视频下载（每次扣 15 积分）",
+          "字幕提取 + AI 翻译（每次扣 15 积分）",
+          "翻译字数限制：300000 字",
+          "支持 12 种语言",
+          "100GB 云盘存储",
+          "文件可长期保留，失效 7 天后将不再保留"
         ],
         "interval": "month",
-        "amount": 24900,
+        "amount": 5990,
         "currency": "USD",
-        "price": "$249",
-        "original_price": "$299",
+        "price": "$59.9",
+        "original_price": "",
         "unit": "/ 月",
         "is_featured": false,
-        "tip": "按月付费，助你交付任何 AI SaaS 项目。",
+        "tip": "为专业创作者提供最大功率！",
         "button": {
-          "title": "获取 ShipAny",
+          "title": "获取 Ultima",
           "url": "/#pricing",
           "icon": "RiFlashlightFill"
         },
         "product_id": "premium-monthly",
-        "product_name": "ShipAny 模板高级版包月",
-        "credits": 300,
+        "product_name": "Ultima 版",
+        "credits": 50000,
         "valid_days": 30,
         "group": "monthly",
-        "plan_name": "高级版"
-      },
-      {
-        "title": "入门版",
-        "description": "开启你的第一个 SaaS 创业项目。",
-        "features_title": "包含",
-        "features": [
-          "100 积分，有效期 1 年",
-          "NextJS 项目模板",
-          "SEO 友好结构",
-          "支持 Stripe 支付",
-          "Supabase 数据存储",
-          "Google Oauth & 一键登录",
-          "多语言（i18n）支持"
-        ],
-        "interval": "year",
-        "amount": 82800,
-        "currency": "USD",
-        "price": "$69",
-        "original_price": "$89",
-        "unit": "/ 月",
-        "is_featured": false,
-        "tip": "按年付费，畅享无限项目部署！",
-        "button": {
-          "title": "获取 ShipAny",
-          "url": "/#pricing",
-          "icon": "RiFlashlightFill"
-        },
-        "product_id": "starter-yearly",
-        "product_name": "ShipAny 模板入门版包年",
-        "credits": 1200,
-        "valid_days": 365,
-        "group": "yearly",
-        "plan_name": "入门版"
-      },
-      {
-        "title": "标准版",
-        "description": "快速交付你的 SaaS 创业项目。",
-        "label": "热门",
-        "features_title": "包含入门版功能，此外",
-        "features": [
-          "200 积分，有效期 1 年",
-          "支持 Vercel 或 Cloudflare 部署",
-          "自动生成隐私政策&服务条款",
-          "集成 Google Analytics",
-          "集成 Google Search Console",
-          "Discord 技术社区",
-          "首个上线项目技术支持",
-          "终身免费更新"
-        ],
-        "interval": "year",
-        "amount": 154800,
-        "currency": "USD",
-        "price": "$129",
-        "original_price": "$169",
-        "unit": "/ 月",
-        "is_featured": true,
-        "tip": "按年付费，极速上线你的 SaaS 项目。",
-        "button": {
-          "title": "获取 ShipAny",
-          "url": "/#pricing",
-          "icon": "RiFlashlightFill"
-        },
-        "product_id": "standard-yearly",
-        "product_name": "ShipAny 模板标准版包年",
-        "credits": 2400,
-        "valid_days": 365,
-        "group": "yearly",
-        "plan_name": "标准版"
-      },
-      {
-        "title": "高级版",
-        "description": "交付任意 AI SaaS 创业项目。",
-        "features_title": "包含标准版功能，此外",
-        "features": [
-          "300 积分，有效期 1 年",
-          "内置 AI 业务功能",
-          "用户中心",
-          "积分系统",
-          "为你的 SaaS 售卖 API",
-          "后台管理系统",
-          "优先技术支持"
-        ],
-        "interval": "year",
-        "amount": 226800,
-        "currency": "USD",
-        "price": "$189",
-        "original_price": "$249",
-        "unit": "/ 月",
-        "is_featured": false,
-        "tip": "按年付费，助你交付任何 AI SaaS 项目。",
-        "button": {
-          "title": "获取 ShipAny",
-          "url": "/#pricing",
-          "icon": "RiFlashlightFill"
-        },
-        "product_id": "premium-yearly",
-        "product_name": "ShipAny 模板高级版包年",
-        "credits": 3600,
-        "valid_days": 365,
-        "group": "yearly",
-        "plan_name": "高级版"
+        "plan_name": "Ultima"
       }
     ]
   },

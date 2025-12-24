@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { AITaskStatus } from '@/extensions/ai';
 import { AudioPlayer, Empty, LazyImage } from '@/shared/blocks/common';
+import { MediaTaskResult } from '@/shared/blocks/generator/media-task-result';
 import { TableCard } from '@/shared/blocks/table';
 import { AITask, getAITasks, getAITasksCount } from '@/shared/models/ai_task';
 import { getUserInfo } from '@/shared/models/user';
@@ -50,6 +51,27 @@ export default async function AiTasksPage({
         name: 'result',
         title: t('fields.result'),
         callback: (item: AITask) => {
+          // Handle video_media type
+          if (item.mediaType === 'video_media') {
+            if (item.taskResult) {
+              try {
+                const result = JSON.parse(item.taskResult);
+                if (result.mediaTaskId) {
+                  return (
+                    <MediaTaskResult
+                      mediaTaskId={result.mediaTaskId}
+                      taskId={item.id}
+                    />
+                  );
+                }
+              } catch (e) {
+                // Ignore parse errors
+              }
+            }
+            return <span className="text-muted-foreground">Processing...</span>;
+          }
+
+          // Handle other media types
           if (item.taskInfo) {
             const taskInfo = JSON.parse(item.taskInfo);
             if (taskInfo.errorMessage) {
@@ -153,6 +175,12 @@ export default async function AiTasksPage({
       title: t('list.tabs.video'),
       url: '/activity/ai-tasks?type=video',
       is_active: type === 'video',
+    },
+    {
+      name: 'video_media',
+      title: 'Media Extractor',
+      url: '/activity/ai-tasks?type=video_media',
+      is_active: type === 'video_media',
     },
     {
       name: 'audio',

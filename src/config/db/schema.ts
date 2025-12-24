@@ -539,3 +539,45 @@ export const chatMessage = pgTable(
     index('idx_chat_message_user_id').on(table.userId, table.status),
   ]
 );
+
+export const mediaTasks = pgTable(
+  'media_tasks',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    platform: text('platform').notNull(), // 'youtube' | 'tiktok'
+    videoUrl: text('video_url').notNull(),
+    thumbnailUrl: text('thumbnail_url'),
+    title: text('title'),
+    author: text('author'),
+    duration: integer('duration'), // duration in seconds
+    likes: integer('likes'),
+    views: integer('views'),
+    shares: integer('shares'),
+    publishedAt: timestamp('published_at'),
+    sourceLang: text('source_lang'),
+    targetLang: text('target_lang'),
+    status: text('status').notNull().default('pending'), // pending, extracting, translating, completed, failed
+    progress: integer('progress').notNull().default(0), // 0-100
+    srtUrl: text('srt_url'), // native language SRT file URL
+    translatedSrtUrl: text('translated_srt_url'), // translated SRT file URL
+    resultVideoUrl: text('result_video_url'), // TikTok video download URL (only for TikTok)
+    errorMessage: text('error_message'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+    deletedAt: timestamp('deleted_at'),
+  },
+  (table) => [
+    // Composite: Query user's media tasks by status
+    // Can also be used for: WHERE userId = ? (left-prefix)
+    index('idx_media_task_user_status').on(table.userId, table.status),
+    // Composite: Query media tasks by platform and status
+    // Can also be used for: WHERE platform = ? (left-prefix)
+    index('idx_media_task_platform_status').on(table.platform, table.status),
+  ]
+);

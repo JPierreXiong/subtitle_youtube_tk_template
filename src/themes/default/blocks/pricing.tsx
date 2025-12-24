@@ -308,7 +308,25 @@ export function Pricing({
       window.location.href = checkoutUrl;
     } catch (e: any) {
       console.log('checkout failed: ', e);
-      toast.error('checkout failed: ' + e.message);
+      
+      // Improve error message display
+      let errorMessage = e.message || 'Unknown error occurred';
+      
+      // Check for common error patterns and provide helpful messages
+      if (errorMessage.includes('no payment provider configured') || 
+          errorMessage.includes('No payment provider configured')) {
+        errorMessage = 'Payment provider not configured. Please contact administrator to set up payment options.';
+      } else if (errorMessage.includes('no auth')) {
+        errorMessage = 'Please sign in to continue with checkout.';
+      } else if (errorMessage.includes('product_id')) {
+        errorMessage = 'Invalid product selected. Please try again.';
+      } else if (errorMessage.includes('checkout failed')) {
+        // Extract the actual error message after "checkout failed: "
+        const actualError = errorMessage.replace(/^checkout failed:\s*/i, '');
+        errorMessage = actualError || 'Checkout failed. Please try again or contact support.';
+      }
+      
+      toast.error(errorMessage);
 
       setIsLoading(false);
       setProductId(null);

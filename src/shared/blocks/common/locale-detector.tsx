@@ -205,6 +205,8 @@ export function LocaleDetector() {
             <span className="text-sm">
               {browserLocale === 'zh'
                 ? `检测到浏览器语言是: ${targetLocaleName}，是否切换？`
+                : browserLocale === 'fr'
+                ? `Nous avons détecté que la langue de votre navigateur est ${targetLocaleName}. Voulez-vous changer ?`
                 : `We detected your browser language is ${targetLocaleName}. Switch to it?`}
             </span>
           </div>
@@ -215,7 +217,11 @@ export function LocaleDetector() {
               size="sm"
               className="bg-background text-xs"
             >
-              {browserLocale === 'zh' ? '切换到中文' : 'Switch'}
+              {browserLocale === 'zh'
+                ? '切换到中文'
+                : browserLocale === 'fr'
+                ? 'Changer'
+                : 'Switch'}
             </Button>
             <button
               onClick={handleDismiss}

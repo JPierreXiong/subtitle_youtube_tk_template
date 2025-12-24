@@ -9,18 +9,9 @@ export function baseOptions(locale: string): BaseLayoutProps {
     links: [],
     nav: {
       title: (
-        <>
-          <Image
-            src="/logo.png"
-            alt={envConfigs.app_name}
-            width={28}
-            height={28}
-            className=""
-          />
-          <span className="text-primary text-lg font-bold">
-            {envConfigs.app_name}
-          </span>
-        </>
+        <span className="text-primary text-lg font-bold">
+          Subtitle TK
+        </span>
       ),
       transparentMode: 'top',
     },

@@ -15,11 +15,8 @@ export default function AuthLayout({
       <div className="absolute top-4 left-4">
         <BrandLogo
           brand={{
-            title: envConfigs.app_name,
-            logo: {
-              src: '/logo.png',
-              alt: envConfigs.app_name,
-            },
+            title: 'Subtitle TK',
+            logo: undefined, // Remove logo
             url: '/',
             target: '_self',
             className: '',
