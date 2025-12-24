@@ -256,7 +256,8 @@ async function refundMediaTaskCredits(mediaTaskId: string) {
       .from(aiTask)
       .where(eq(aiTask.mediaType, 'video_media'));
 
-    const aiTasks = allAiTasks.filter((task) => {
+    type AiTaskSelect = typeof aiTask.$inferSelect;
+    const aiTasks = allAiTasks.filter((task: AiTaskSelect) => {
       if (!task.taskResult) return false;
       try {
         const result = JSON.parse(task.taskResult);

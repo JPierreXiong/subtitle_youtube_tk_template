@@ -583,8 +583,12 @@ export function MediaExtractor({
             <div className="flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground">
-                {t('extractor.credits_remaining', { 
-                  credits: user.credits?.remainingCredits || user.credits || 0 
+                {t('extractor.credits_remaining', {
+                  credits: typeof user.credits === 'object' && user.credits !== null && 'remainingCredits' in user.credits
+                    ? user.credits.remainingCredits
+                    : typeof user.credits === 'number'
+                    ? user.credits
+                    : 0
                 })}
               </span>
             </div>
