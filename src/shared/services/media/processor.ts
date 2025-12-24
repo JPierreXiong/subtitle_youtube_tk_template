@@ -390,7 +390,9 @@ export class MediaProcessor {
    */
   srtItemsToString(srtItems: SrtItem[]): string {
     const parser = new Parser();
-    return parser.toSrt(srtItems);
+    // srt-parser-2 expects Line[] with startSeconds/endSeconds, but our SrtItem only has time strings
+    // The library works fine at runtime with just time strings, so we use type assertion
+    return parser.toSrt(srtItems as any);
   }
 
   /**
@@ -398,7 +400,8 @@ export class MediaProcessor {
    */
   parseSrtString(srtContent: string): SrtItem[] {
     const parser = new Parser();
-    return parser.fromSrt(srtContent);
+    // parser.fromSrt may return objects with additional properties, but we only need the SrtItem fields
+    return parser.fromSrt(srtContent) as SrtItem[];
   }
 
   /**
