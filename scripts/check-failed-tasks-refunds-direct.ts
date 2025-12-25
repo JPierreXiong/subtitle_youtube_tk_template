@@ -25,7 +25,7 @@ async function checkFailedTasksRefunds() {
         .limit(10);
       
       console.log('\nAvailable users:');
-      allUsers.forEach((u, index) => {
+      allUsers.forEach((u: { id: string; email: string }, index: number) => {
         console.log(`  ${index + 1}. ${u.email} (${u.id})`);
       });
       
@@ -107,7 +107,7 @@ async function checkFailedTasksRefunds() {
       .limit(20);
 
     if (recentCredits.length > 0) {
-      recentCredits.forEach((creditRecord, index) => {
+      recentCredits.forEach((creditRecord: typeof credit.$inferSelect, index: number) => {
         const isRefunded = creditRecord.status === 'deleted';
         const sign = creditRecord.transactionType === 'grant' ? '+' : '-';
         const credits = creditRecord.transactionType === 'consume' 
@@ -142,7 +142,7 @@ async function checkFailedTasksRefunds() {
         )
       );
 
-    const totalConsumed = consumedCredits.reduce((sum, c) => {
+    const totalConsumed = consumedCredits.reduce((sum: number, c: typeof credit.$inferSelect) => {
       try {
         const consumedItems = JSON.parse(c.consumedDetail || '[]');
         return (

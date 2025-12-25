@@ -38,7 +38,7 @@ async function checkFailedTasksRefunds() {
 
     if (failedTasks.length > 0) {
       console.log('Failed Tasks Details:');
-      failedTasks.forEach((task, index) => {
+      failedTasks.forEach((task: typeof mediaTasks.$inferSelect, index: number) => {
         console.log(`\n${index + 1}. Task ID: ${task.id}`);
         console.log(`   Status: ${task.status}`);
         console.log(`   Output Type: ${task.outputType || 'N/A'}`);
@@ -55,7 +55,7 @@ async function checkFailedTasksRefunds() {
             .from(credit)
             .where(eq(credit.id, task.creditId))
             .limit(1)
-            .then((creditRecords) => {
+            .then((creditRecords: typeof credit.$inferSelect[]) => {
               if (creditRecords.length > 0) {
                 const creditRecord = creditRecords[0];
                 console.log(`   Credit Status: ${creditRecord.status}`);
@@ -69,7 +69,7 @@ async function checkFailedTasksRefunds() {
                 console.log(`   ✗ Credit record not found`);
               }
             })
-            .catch((err) => {
+            .catch((err: any) => {
               console.log(`   Error checking credit: ${err.message}`);
             });
         }
@@ -86,7 +86,7 @@ async function checkFailedTasksRefunds() {
       .limit(10);
 
     if (recentCredits.length > 0) {
-      recentCredits.forEach((creditRecord, index) => {
+      recentCredits.forEach((creditRecord: typeof credit.$inferSelect, index: number) => {
         const isRefunded = creditRecord.status === 'deleted';
         const sign = creditRecord.transactionType === 'grant' ? '+' : '-';
         console.log(
@@ -110,7 +110,7 @@ async function checkFailedTasksRefunds() {
         )
       );
 
-    const totalConsumed = consumedCredits.reduce((sum, c) => {
+    const totalConsumed = consumedCredits.reduce((sum: number, c: typeof credit.$inferSelect) => {
       const consumedItems = JSON.parse(c.consumedDetail || '[]');
       return (
         sum +

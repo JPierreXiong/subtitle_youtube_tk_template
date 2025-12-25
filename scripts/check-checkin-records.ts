@@ -60,7 +60,7 @@ async function checkCheckinRecords() {
 
     console.log('\nRecent check-ins (last 10, all users):');
     if (recentCheckins.length > 0) {
-      recentCheckins.forEach((checkin, index) => {
+      recentCheckins.forEach((checkin: typeof dailyCheckins.$inferSelect, index: number) => {
         const isToday = checkin.checkinDate === todayUTC;
         console.log(`  ${index + 1}. User: ${checkin.userId.substring(0, 8)}..., Date: ${checkin.checkinDate} ${isToday ? '(TODAY UTC)' : ''}, Created: ${checkin.createdAt}`);
       });

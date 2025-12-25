@@ -100,12 +100,15 @@ export class RapidAPIProvider {
    * @returns Normalized media data
    */
   private async fetchYouTubeMedia(url: string): Promise<NormalizedMediaData> {
+    // Format URL (convert shorts to watch format for API compatibility)
+    const formattedUrl = this.formatYouTubeUrl(url);
+    
     const host =
       this.configs.hostYouTubeTranscript ||
       'youtube-transcripts-transcribe-youtube-video-to-text.p.rapidapi.com';
 
     // Fetch transcript/subtitle using new API endpoint
-    const transcriptData = await this.fetchYouTubeTranscript(url, host).catch((error) => {
+    const transcriptData = await this.fetchYouTubeTranscript(formattedUrl, host).catch((error) => {
       console.warn('Failed to fetch YouTube transcript:', error);
       return null; // Allow task to continue without subtitle
     });
@@ -147,18 +150,21 @@ export class RapidAPIProvider {
    * @returns Normalized media data with video URL
    */
   private async fetchYouTubeVideo(url: string): Promise<NormalizedMediaData> {
+    // Format URL (convert shorts to watch format for API compatibility)
+    const formattedUrl = this.formatYouTubeUrl(url);
+    
     const downloadHost =
       this.configs.hostYouTubeDownload ||
       'youtube-video-and-shorts-downloader1.p.rapidapi.com';
 
     // Extract video ID from URL
-    const videoId = this.extractYouTubeVideoId(url);
+    const videoId = this.extractYouTubeVideoId(formattedUrl);
     if (!videoId) {
       throw new Error(`Invalid YouTube URL: ${url}`);
     }
 
-    // Call YouTube video download API
-    const videoData = await this.fetchYouTubeVideoDownload(url, videoId, downloadHost);
+    // Call YouTube video download API (use formatted URL)
+    const videoData = await this.fetchYouTubeVideoDownload(formattedUrl, videoId, downloadHost);
 
     // Normalize metadata
     const metadata = this.normalizeMetadata(videoData, 'youtube');
@@ -687,18 +693,49 @@ export class RapidAPIProvider {
   }
 
   /**
+   * Format YouTube URL to standard watch?v= format
+   * Converts shorts/ URLs to watch?v= format for API compatibility
+   * @param url YouTube URL
+   * @returns Formatted URL
+   */
+  private formatYouTubeUrl(url: string): string {
+    // Convert YouTube Shorts URL to standard watch?v= format for API compatibility
+    if (url.includes('/shorts/')) {
+      // Extract video ID from shorts URL
+      // Support formats:
+      // - https://www.youtube.com/shorts/VIDEO_ID
+      // - https://youtube.com/shorts/VIDEO_ID
+      // - https://m.youtube.com/shorts/VIDEO_ID
+      const shortsMatch = url.match(/(?:www\.|m\.)?youtube\.com\/shorts\/([^&\n?#\/]+)/);
+      if (shortsMatch && shortsMatch[1]) {
+        const videoId = shortsMatch[1];
+        // Convert to watch?v= format
+        // Preserve the original domain (www. or m. or none)
+        const domain = url.match(/https?:\/\/(?:www\.|m\.)?youtube\.com/)?.[0] || 'https://www.youtube.com';
+        return `${domain}/watch?v=${videoId}`;
+      }
+    }
+    return url;
+  }
+
+  /**
    * Extract YouTube video ID from URL
+   * Supports multiple YouTube URL formats including Shorts
    * @param url YouTube URL
    * @returns Video ID or null
    */
   private extractYouTubeVideoId(url: string): string | null {
+    // Format URL first (convert shorts to watch format)
+    const formattedUrl = this.formatYouTubeUrl(url);
+    
     const patterns = [
       /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
       /youtube\.com\/embed\/([^&\n?#]+)/,
+      /youtube\.com\/shorts\/([^&\n?#\/]+)/, // Support shorts format directly
     ];
 
     for (const pattern of patterns) {
-      const match = url.match(pattern);
+      const match = formattedUrl.match(pattern);
       if (match && match[1]) {
         return match[1];
       }

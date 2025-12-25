@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
       return respErr('URL is required');
     }
 
-    // Validate URL format
+    // Validate URL format (supports YouTube Shorts)
     const isValidUrl =
       url.includes('youtube.com') ||
       url.includes('youtu.be') ||

@@ -429,7 +429,7 @@ export function MediaExtractor({
       return;
     }
 
-    // Validate URL
+    // Validate URL (supports YouTube Shorts)
     const isValidUrl =
       url.includes('youtube.com') ||
       url.includes('youtu.be') ||

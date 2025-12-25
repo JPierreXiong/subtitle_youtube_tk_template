@@ -65,7 +65,7 @@ async function fixAndRefundMissingCreditId() {
       console.log(`  Created: ${task.createdAt}`);
 
       // Find matching credit transaction by taskId in metadata
-      const matchingCredit = consumeCredits.find((c) => {
+      const matchingCredit = consumeCredits.find((c: typeof credit.$inferSelect) => {
         try {
           const metadata = JSON.parse(c.metadata || '{}');
           return metadata.taskId === task.id && metadata.type === 'media-task';

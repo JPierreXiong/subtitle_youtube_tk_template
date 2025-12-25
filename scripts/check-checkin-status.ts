@@ -43,7 +43,7 @@ async function checkCheckinStatus() {
 
     console.log(`Check-ins for today (UTC ${todayUTC}): ${todayCheckins.length}`);
     if (todayCheckins.length > 0) {
-      todayCheckins.forEach((checkin, index) => {
+      todayCheckins.forEach((checkin: typeof dailyCheckins.$inferSelect, index: number) => {
         console.log(`  ${index + 1}. Check-in ID: ${checkin.id}, Date: ${checkin.checkinDate}, Created: ${checkin.createdAt}`);
       });
     }
@@ -58,7 +58,7 @@ async function checkCheckinStatus() {
       .limit(7);
 
     if (recentCheckins.length > 0) {
-      recentCheckins.forEach((checkin, index) => {
+      recentCheckins.forEach((checkin: typeof dailyCheckins.$inferSelect, index: number) => {
         const isToday = checkin.checkinDate === todayUTC;
         console.log(`  ${index + 1}. Date: ${checkin.checkinDate} ${isToday ? '(TODAY)' : ''}, Created: ${checkin.createdAt}`);
       });
