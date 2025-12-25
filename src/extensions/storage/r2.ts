@@ -149,6 +149,156 @@ export class R2Provider implements StorageProvider {
       };
     }
   }
+
+  /**
+   * Stream upload from URL (for large video files)
+   * Downloads video stream and uploads to R2 without loading entire file into memory
+   * @param videoUrl Video URL to download
+   * @param key Storage key (e.g., 'videos/tiktok_12345.mp4')
+   * @param contentType Content type (default: 'video/mp4')
+   * @returns Storage upload result with key
+   */
+  async streamUploadFromUrl(
+    videoUrl: string,
+    key: string,
+    contentType: string = 'video/mp4'
+  ): Promise<StorageUploadResult> {
+    try {
+      const uploadBucket = this.configs.bucket;
+      if (!uploadBucket) {
+        return {
+          success: false,
+          error: 'Bucket is required',
+          provider: this.name,
+        };
+      }
+
+      // Fetch video stream
+      const response = await fetch(videoUrl, {
+        signal: AbortSignal.timeout(60000), // 1 minute download timeout
+      });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `Failed to download video: ${response.status} ${response.statusText}`,
+          provider: this.name,
+        };
+      }
+
+      if (!response.body) {
+        return {
+          success: false,
+          error: 'No body in response',
+          provider: this.name,
+        };
+      }
+
+      // Stream upload to R2
+      const endpoint =
+        this.configs.endpoint ||
+        `https://${this.configs.accountId}.r2.cloudflarestorage.com`;
+      const url = `${endpoint}/${uploadBucket}/${key}`;
+
+      const { AwsClient } = await import('aws4fetch');
+
+      const client = new AwsClient({
+        accessKeyId: this.configs.accessKeyId,
+        secretAccessKey: this.configs.secretAccessKey,
+        region: this.configs.region || 'auto',
+      });
+
+      // Create a new request with the stream body
+      const request = new Request(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': contentType,
+          'Content-Disposition': 'inline',
+        },
+        body: response.body as any,
+        // @ts-ignore - duplex is required for streaming requests in some environments
+        duplex: 'half',
+      } as any);
+
+      const uploadResponse = await client.fetch(request);
+
+      if (!uploadResponse.ok) {
+        return {
+          success: false,
+          error: `Upload failed: ${uploadResponse.statusText}`,
+          provider: this.name,
+        };
+      }
+
+      const publicUrl = this.configs.publicDomain
+        ? `${this.configs.publicDomain}/${key}`
+        : url;
+
+      return {
+        success: true,
+        location: url,
+        bucket: uploadBucket,
+        key: key,
+        filename: key.split('/').pop(),
+        url: publicUrl,
+        provider: this.name,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        provider: this.name,
+      };
+    }
+  }
+
+  /**
+   * Generate presigned URL for private R2 object
+   * @param key Storage key
+   * @param expiresIn Expiration time in seconds (default: 86400 = 24 hours)
+   * @returns Presigned URL
+   */
+  async getPresignedUrl(
+    key: string,
+    expiresIn: number = 86400
+  ): Promise<string> {
+    try {
+      const uploadBucket = this.configs.bucket;
+      if (!uploadBucket) {
+        throw new Error('Bucket is required');
+      }
+
+      const endpoint =
+        this.configs.endpoint ||
+        `https://${this.configs.accountId}.r2.cloudflarestorage.com`;
+      const url = `${endpoint}/${uploadBucket}/${key}`;
+
+      const { AwsClient } = await import('aws4fetch');
+
+      const client = new AwsClient({
+        accessKeyId: this.configs.accessKeyId,
+        secretAccessKey: this.configs.secretAccessKey,
+        region: this.configs.region || 'auto',
+      });
+
+      // Create a GET request
+      const request = new Request(url, {
+        method: 'GET',
+      });
+
+      // Sign the request with expiration
+      const signedRequest = await client.sign(request, {
+        signQuery: true as any,
+        expiresIn: expiresIn,
+      } as any);
+
+      return signedRequest.url;
+    } catch (error) {
+      throw new Error(
+        `Failed to generate presigned URL: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
 }
 
 /**

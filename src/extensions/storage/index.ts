@@ -150,3 +150,4 @@ export const storageManager = new StorageManager();
 // Export all providers
 export * from './s3';
 export * from './r2';
+export * from './vercel-blob';

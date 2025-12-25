@@ -15,6 +15,10 @@ export const user = pgTable(
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').default(false).notNull(),
     image: text('image'),
+    // Plan management fields
+    planType: text('plan_type').default('free'), // free, base, pro, on_demand
+    freeTrialUsed: integer('free_trial_used').default(0), // Free trial count used
+    lastCheckinDate: text('last_checkin_date'), // Last check-in date (YYYY-MM-DD)
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
@@ -264,10 +268,17 @@ export const subscription = pgTable(
       .notNull(),
     deletedAt: timestamp('deleted_at'),
     planName: text('plan_name'),
+    planType: text('plan_type'), // free, base, pro, on_demand
     billingUrl: text('billing_url'),
     productName: text('product_name'), // subscription product name
     creditsAmount: integer('credits_amount'), // subscription credits amount
     creditsValidDays: integer('credits_valid_days'), // subscription credits valid days
+    // Plan limits
+    maxVideoDuration: integer('max_video_duration'), // Video duration limit in seconds (null = unlimited)
+    concurrentLimit: integer('concurrent_limit').default(1), // Concurrent task limit (null = unlimited)
+    exportFormats: text('export_formats'), // JSON array: ["SRT","CSV","VTT","TXT"]
+    storageHours: integer('storage_hours').default(24), // Storage duration in hours
+    translationCharLimit: integer('translation_char_limit'), // Translation character limit (null = unlimited)
     paymentProductId: text('payment_product_id'), // subscription payment product id
     paymentUserId: text('payment_user_id'), // subscription payment user id
     canceledAt: timestamp('canceled_at'), // subscription canceled apply at
@@ -558,13 +569,25 @@ export const mediaTasks = pgTable(
     shares: integer('shares'),
     publishedAt: timestamp('published_at'),
     sourceLang: text('source_lang'),
-    targetLang: text('target_lang'),
-    status: text('status').notNull().default('pending'), // pending, extracting, translating, completed, failed
+    targetLang: text('target_lang'), // user selected target language for translation
+    status: text('status').notNull().default('pending'), // pending, processing, extracted, translating, completed, failed
     progress: integer('progress').notNull().default(0), // 0-100
     srtUrl: text('srt_url'), // native language SRT file URL
     translatedSrtUrl: text('translated_srt_url'), // translated SRT file URL
     resultVideoUrl: text('result_video_url'), // TikTok video download URL (only for TikTok)
     errorMessage: text('error_message'),
+    // New fields: subtitle text content
+    subtitleRaw: text('subtitle_raw'), // original language subtitle text (SRT format)
+    subtitleTranslated: text('subtitle_translated'), // translated subtitle text (SRT format)
+    // New fields: video storage
+    videoUrlInternal: text('video_url_internal'), // R2 storage object key (e.g., videos/tiktok_12345.mp4)
+    expiresAt: timestamp('expires_at'), // 24-hour expiration time (NULL for non-video tasks)
+    // New field: output type
+    outputType: text('output_type'), // 'subtitle' | 'video'
+    // Credit consumption record id (for refund on failure)
+    creditId: text('credit_id'), // credit consumption record id
+    // Free trial flag
+    isFreeTrial: boolean('is_free_trial').default(false), // Whether this task used free trial
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
@@ -579,5 +602,24 @@ export const mediaTasks = pgTable(
     // Composite: Query media tasks by platform and status
     // Can also be used for: WHERE platform = ? (left-prefix)
     index('idx_media_task_platform_status').on(table.platform, table.status),
+    // New index: Query expired videos
+    index('idx_media_task_expires').on(table.expiresAt),
+  ]
+);
+
+export const dailyCheckins = pgTable(
+  'daily_checkins',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    checkinDate: text('checkin_date').notNull(), // Format: YYYY-MM-DD (UTC)
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    // Unique index: Prevent duplicate check-ins for same user on same date
+    // This provides physical isolation at database level
+    index('idx_daily_checkin_user_date').on(table.userId, table.checkinDate),
   ]
 );

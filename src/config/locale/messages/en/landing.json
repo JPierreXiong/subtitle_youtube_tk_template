@@ -370,48 +370,41 @@
     "tip": "Can't find what you're looking for? Contact our <a href='mailto:feedback@subtitleTK.com' class='text-primary font-medium hover:underline'>customer support team</a>",
     "items": [
       {
-        "question": "How much does it cost to use SubtitleTK?",
-        "answer": "SubtitleTK is a high-performance digital toolkit designed to extract and translate subtitles from YouTube and TikTok videos. We believe in simple, transparent pricing. Our current model is: 1 Credit for Subtitle Extraction. 1 Credit for Video Download (TikTok). 1 Credit for AI Translation services. (Note: Each specific action consumes exactly one credit, making it easy to manage your balance.)"
+        "question": "Which platforms are supported and how does the processing work?",
+        "answer": "We support video and subtitle extraction from YouTube and TikTok. The process is split into two stages: first, we extract the metadata and original subtitles; second, you can choose to use Gemini 1.5 Flash AI to translate the content into your target language."
       },
       {
-        "question": "What happens if an extraction fails?",
-        "answer": "At SubtitleTK, we value your trust. If a video is restricted, private, or the system fails to process it, our Automatic Refund Policy ensures that your credit is immediately returned to your account."
+        "question": "How does the credit system and \"Fail-Safe\" refund policy work?",
+        "answer": "Tasks consume credits based on usage: 10 for extraction, 15 for video downloads, and 5 for AI translation. If a task fails due to a system error, the credits are automatically refunded to your account immediately."
       },
       {
-        "question": "How many languages can I translate into?",
-        "answer": "SubtitleTK supports 12+ major global languages for AI translation, including English, Chinese, Spanish, French, German, Japanese, and more. This allows you to localize any viral content for your specific target audience."
+        "question": "What is the difference between Subscription and On-demand plans?",
+        "answer": "Subscription (Pro/Base): Best for power users, offering the lowest price per credit, high concurrency (up to 3 tasks), and no video length limits. Credits expire every 30 days. On-demand ($4.9): Perfect for casual users. These credits remain valid for 365 days."
       },
       {
-        "question": "Can I preview the results before downloading?",
-        "answer": "Yes. After the processing reaches 100%, you can visit your Activity dashboard to see a preview table of the first 10 subtitle segments. Once you are satisfied, you can download the full .SRT file."
+        "question": "Are there any limitations on video length or concurrent tasks?",
+        "answer": "Free and Base users are limited to videos under 10 minutes and can process 1 task at a time. Professional users enjoy unlimited video length and can run up to 3 tasks simultaneously for maximum efficiency."
       },
       {
-        "question": "Why is the translation process sometimes slower than extraction?",
-        "answer": "While extraction is nearly instant, AI Translation is processed in smart chunks (4,000 characters each) to maintain high linguistic accuracy and bypass technical limits. For long videos, this may take 1-2 minutes to ensure every word is perfectly translated."
+        "question": "How can I earn free credits daily?",
+        "answer": "You can earn 5 free credits every day by simply logging in and using our Daily Check-in feature. These credits are valid for 30 days and refresh at 00:00 UTC, allowing you to use our premium services for free over time."
       },
       {
-        "question": "Where are my files stored?",
-        "answer": "Your processed files and video metadata are stored securely in our private cloud storage. You can access your history and download your files at any time via the Activity tab in your dashboard."
+        "question": "How long is my data stored and is it secure?",
+        "answer": "Your privacy is our priority. Extracted video files are stored in encrypted Cloudflare R2 storage and are permanently deleted after 24 hours. We recommend downloading your files (SRT, CSV, or Video) within this window."
       }
     ]
   },
   "cta": {
     "id": "cta",
-    "title": "Ship your first AI SaaS Startup",
-    "description": "Start from here, ship with Subtitle TK.",
+    "title": "Extract the Essence. Translate the Message",
+    "description": "Start from here with Subtitle TK.",
     "buttons": [
       {
         "title": "Get Subtitle TK",
         "url": "https://www.subtitletk.app",
         "target": "_blank",
         "icon": "Zap"
-      },
-      {
-        "title": "Read Document",
-        "url": "/docs",
-        "target": "_blank",
-        "variant": "outline",
-        "icon": "BookOpenText"
       }
     ]
   },

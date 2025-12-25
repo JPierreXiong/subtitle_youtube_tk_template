@@ -17,7 +17,7 @@
     "target_lang_placeholder": "选择语言",
     "output_type_label": "输出类型",
     "output_type_subtitle": "字幕",
-    "output_type_video": "视频（仅 TikTok）",
+    "output_type_video": "视频",
     "extract": "提取",
     "extracting": "提取中...",
     "translating": "翻译中...",

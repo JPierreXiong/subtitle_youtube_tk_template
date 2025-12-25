@@ -40,6 +40,18 @@ export async function GET(request: Request) {
       targetLang: task.targetLang,
       title: task.title,
       platform: task.platform,
+      // New fields
+      subtitleRaw: task.subtitleRaw,
+      subtitleTranslated: task.subtitleTranslated,
+      videoUrlInternal: task.videoUrlInternal,
+      expiresAt: task.expiresAt,
+      outputType: task.outputType,
+      // Metadata
+      author: task.author,
+      likes: task.likes,
+      views: task.views,
+      shares: task.shares,
+      thumbnailUrl: task.thumbnailUrl,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
     });
@@ -48,6 +60,8 @@ export async function GET(request: Request) {
     return respErr(e.message);
   }
 }
+
+
 
 
 

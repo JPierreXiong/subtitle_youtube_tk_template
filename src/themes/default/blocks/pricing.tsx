@@ -80,12 +80,22 @@ export function Pricing({
   pricing,
   className,
   currentSubscription,
+  locale,
 }: {
   pricing: PricingType;
   className?: string;
   currentSubscription?: Subscription;
+  locale?: string;
 }) {
-  const locale = useLocale();
+  // Use locale prop if provided, otherwise fallback to useLocale hook
+  let currentLocale: string;
+  try {
+    currentLocale = locale || useLocale();
+  } catch (e) {
+    // Fallback if intl context is not available
+    currentLocale = locale || 'en';
+  }
+  
   const t = useTranslations('pricing.page');
   const {
     user,
@@ -133,7 +143,7 @@ export function Pricing({
         const currencies = getCurrenciesFromItem(item);
         const selectedCurrency = getInitialCurrency(
           currencies,
-          locale,
+          currentLocale,
           item.currency
         );
 
@@ -165,7 +175,7 @@ export function Pricing({
 
       setItemCurrencies(initialCurrencyStates);
     }
-  }, [pricing.items, locale]);
+  }, [pricing.items, currentLocale]);
 
   // Handler for currency change
   const handleCurrencyChange = (productId: string, currency: string) => {
@@ -267,7 +277,7 @@ export function Pricing({
       const params = {
         product_id: item.product_id,
         currency: item.currency,
-        locale: locale || 'en',
+        locale: currentLocale,
         payment_provider: paymentProvider || '',
         metadata: affiliateMetadata,
       };

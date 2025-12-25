@@ -1,4 +1,9 @@
-import { R2Provider, S3Provider, StorageManager } from '@/extensions/storage';
+import {
+  R2Provider,
+  S3Provider,
+  VercelBlobProvider,
+  StorageManager,
+} from '@/extensions/storage';
 import { Configs, getAllConfigs } from '@/shared/models/config';
 
 /**
@@ -6,6 +11,25 @@ import { Configs, getAllConfigs } from '@/shared/models/config';
  */
 export function getStorageServiceWithConfigs(configs: Configs) {
   const storageManager = new StorageManager();
+
+  // Determine default provider from config or environment variable
+  const storageProvider =
+    configs.storage_provider ||
+    process.env.STORAGE_PROVIDER ||
+    null; // No default, will be determined by priority
+
+  // Add Vercel Blob provider if configured (priority: highest)
+  const blobToken =
+    configs.blob_read_write_token || process.env.BLOB_READ_WRITE_TOKEN;
+  if (blobToken) {
+    const vercelBlobProvider = new VercelBlobProvider({
+      token: blobToken,
+    });
+    // Set as default if explicitly configured OR if no provider is specified
+    const isDefault =
+      storageProvider === 'vercel-blob' || storageProvider === null;
+    storageManager.addProvider(vercelBlobProvider, isDefault);
+  }
 
   // Add R2 provider if configured
   if (
@@ -27,7 +51,7 @@ export function getStorageServiceWithConfigs(configs: Configs) {
         endpoint: configs.r2_endpoint, // Optional custom endpoint
         publicDomain: configs.r2_domain,
       }),
-      true // Set R2 as default
+      storageProvider === 'r2' // Set as default if configured
     );
   }
 
@@ -41,7 +65,8 @@ export function getStorageServiceWithConfigs(configs: Configs) {
         secretAccessKey: configs.s3_secret_key,
         bucket: configs.s3_bucket,
         publicDomain: configs.s3_domain,
-      })
+      }),
+      storageProvider === 's3' // Set as default if configured
     );
   }
 

@@ -1,287 +1,270 @@
-import { AIMediaType, AITaskStatus } from '@/extensions/ai';
-import { db } from '@/core/db';
-import { aiTask } from '@/config/db/schema';
-import { eq } from 'drizzle-orm';
-import { getUuid } from '@/shared/lib/hash';
+import { NextRequest } from 'next/server';
+
 import { respData, respErr } from '@/shared/lib/resp';
-import { createAITask, NewAITask } from '@/shared/models/ai_task';
-import { getRemainingCredits } from '@/shared/models/credit';
+import { getUserInfo } from '@/shared/models/user';
 import {
   createMediaTask,
-  hasActiveMediaTask,
-  NewMediaTask,
+  findMediaTaskById,
+  updateMediaTaskById,
 } from '@/shared/models/media_task';
-import { getUserInfo } from '@/shared/models/user';
-import { getMediaProcessor, Platform } from '@/shared/services/media/processor';
-
-export const maxDuration = 180; // Vercel 180 seconds limit
-
-export async function POST(request: Request) {
-  try {
-    const { url, outputType, targetLang } = await request.json();
-
-    if (!url) {
-      throw new Error('URL is required');
-    }
-
-    // Get current user
-    const user = await getUserInfo();
-    if (!user) {
-      throw new Error('no auth, please sign in');
-    }
-
-    // Check concurrent limit (1 active task per user)
-    const hasActive = await hasActiveMediaTask(user.id);
-    if (hasActive) {
-      throw new Error(
-        'You already have an active task. Please wait for it to complete.'
-      );
-    }
-
-    // Detect platform
-    let platform: Platform;
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      platform = 'youtube';
-    } else if (url.includes('tiktok.com') || url.includes('vm.tiktok.com')) {
-      platform = 'tiktok';
-    } else {
-      throw new Error('Invalid URL. Only YouTube and TikTok are supported.');
-    }
-
-    // Calculate cost credits
-    // Original rule:
-    // - Base subtitle extraction: 10 credits
-    // - TikTok video download: 15 credits
-    // - Subtitle extraction + AI translation: 15 credits (10 for extraction + 5 for translation)
-    let costCredits = 10; // Base cost for subtitle extraction
-    
-    if (outputType === 'video' && platform === 'tiktok') {
-      costCredits = 15; // Video download costs more
-    } else if (targetLang && outputType !== 'video') {
-      costCredits = 15; // Subtitle extraction (10) + Translation (5)
-    }
-
-    // Check credits
-    const remainingCredits = await getRemainingCredits(user.id);
-    if (remainingCredits < costCredits) {
-      return respErr(`insufficient credits (required: ${costCredits}, available: ${remainingCredits})`);
-    }
-
-    // Create media task
-    const mediaTaskId = getUuid();
-    const newMediaTask: NewMediaTask = {
-      id: mediaTaskId,
-      userId: user.id,
-      platform,
-      videoUrl: url,
-      status: 'pending',
-      progress: 0,
-    };
-
-    await createMediaTask(newMediaTask, costCredits);
-
-    // Create ai_task for Activity page integration
-    // Note: Credits are consumed in createAITask
-    // If createAITask fails, the transaction will rollback and credits won't be consumed
-    const aiTaskId = getUuid();
-    const newAITask: NewAITask = {
-      id: aiTaskId,
-      userId: user.id,
-      mediaType: 'video_media', // Custom media type for media extraction
-      provider: 'media-extractor',
-      model: platform,
-      prompt: url,
-      scene: outputType === 'video' ? 'video-download' : 'subtitle-extraction',
-      status: AITaskStatus.PENDING,
-      costCredits,
-      taskResult: JSON.stringify({ mediaTaskId }),
-    };
-
-    // Create ai_task - credits are consumed here
-    // If this fails, the transaction will rollback automatically
-    // If createMediaTask succeeded but createAITask fails, media_task will remain
-    // but no credits will be consumed, so it's safe to leave it
-    await createAITask(newAITask);
-
-    // Start async processing (non-blocking)
-    processMediaTask(mediaTaskId, platform, url, outputType, targetLang).catch(
-      (error) => {
-        console.error('Media processing failed:', error);
-        // Error handling will be done in processMediaTask
-      }
-    );
-
-    return respData({
-      taskId: mediaTaskId,
-      message: 'Processing started',
-    });
-  } catch (e: any) {
-    console.log('media submit failed', e);
-    return respErr(e.message);
-  }
-}
+import { getUuid } from '@/shared/lib/hash';
+import { fetchMediaFromRapidAPI } from '@/shared/services/media/rapidapi';
+import {
+  uploadVideoToStorage,
+  uploadVideoToR2,
+} from '@/shared/services/media/video-storage';
+import {
+  consumeCredits,
+  CreditTransactionScene,
+  CreditTransactionType,
+  getRemainingCredits,
+} from '@/shared/models/credit';
+import {
+  checkAllPlanLimits,
+  getEstimatedCreditsCost,
+  getUserPlanLimits,
+} from '@/shared/services/media/plan-limits';
+import { db } from '@/core/db';
+import { user } from '@/config/db/schema';
+import { eq } from 'drizzle-orm';
 
 /**
  * Process media task asynchronously
+ * This function runs in the background and updates task status
  */
 async function processMediaTask(
   taskId: string,
-  platform: Platform,
   url: string,
-  outputType: string,
-  targetLang?: string
+  outputType: 'subtitle' | 'video',
+  userId: string
 ) {
-  const { updateMediaTaskById } = await import('@/shared/models/media_task');
-  const processor = await getMediaProcessor();
-
   try {
-    // Update status to extracting
+    // Credits are already consumed in createMediaTask
+    // No need to consume again here
+
+    // Update status to processing
     await updateMediaTaskById(taskId, {
-      status: 'extracting',
+      status: 'processing',
       progress: 10,
     });
 
-    // Extract metadata and subtitles
-    let metadata: any;
-    let srtItems: any[];
-
-    if (platform === 'youtube') {
-      const videoId = processor.extractYouTubeId(url);
-      if (!videoId) {
-        throw new Error('Failed to extract YouTube video ID');
-      }
-
-      const result = await processor.extractYouTubeMetadata(videoId);
-      metadata = result.metadata;
-      srtItems = result.srtItems;
-    } else {
-      // TikTok
-      const result = await processor.extractTikTokMetadata(url);
-      metadata = result.metadata;
-      srtItems = result.srtItems;
-    }
+    // Step 1: Fetch media data from RapidAPI
+    // Pass outputType to ensure correct API is called
+    const mediaData = await fetchMediaFromRapidAPI(url, outputType || 'subtitle');
 
     // Update progress
     await updateMediaTaskById(taskId, {
-      ...metadata,
-      sourceLang: metadata.sourceLang,
-      progress: 40,
+      progress: 30,
+      platform: mediaData.platform,
+      title: mediaData.title,
+      author: mediaData.author,
+      likes: mediaData.likes,
+      views: mediaData.views,
+      shares: mediaData.shares,
+      duration: mediaData.duration,
+      publishedAt: mediaData.publishedAt,
+      thumbnailUrl: mediaData.thumbnailUrl,
+      sourceLang: mediaData.sourceLang || 'auto',
     });
 
-    // Generate native SRT file
-    const srtContent = processor.srtItemsToString(srtItems);
-    const srtFileName = `native-${taskId}.srt`;
-    const srtUrl = await processor.uploadSrtFile(srtContent, srtFileName);
+    // Step 2: Handle video upload if needed (TikTok + video output type)
+    let videoUrlInternal: string | null = null;
+    let expiresAt: Date | null = null;
 
+    if (
+      mediaData.platform === 'tiktok' &&
+      outputType === 'video' &&
+      mediaData.videoUrl &&
+      mediaData.isTikTokVideo
+    ) {
+      await updateMediaTaskById(taskId, {
+        progress: 40,
+      });
+
+      // Try to upload video to storage (R2 or Vercel Blob)
+      const storageIdentifier = await uploadVideoToStorage(mediaData.videoUrl);
+
+      if (storageIdentifier) {
+        // Successfully uploaded to storage
+        videoUrlInternal = storageIdentifier;
+        expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        await updateMediaTaskById(taskId, {
+          progress: 70,
+        });
+      } else {
+        // Storage not configured or upload failed, use original video URL
+        // Store original URL with a special prefix to indicate it's not in storage
+        videoUrlInternal = `original:${mediaData.videoUrl}`;
+        // Note: Original URLs from TikTok may expire, so set a shorter expiration
+        expiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours for original URLs
+        await updateMediaTaskById(taskId, {
+          progress: 70,
+        });
+        console.log(
+          'Using original video URL (storage not configured or upload failed)'
+        );
+      }
+    }
+
+    // Step 3: Save subtitle content
     await updateMediaTaskById(taskId, {
-      srtUrl,
-      progress: 60,
+      progress: 90,
+      subtitleRaw: mediaData.subtitleRaw || null,
     });
 
-    // Handle translation if targetLang is provided
-    if (targetLang && outputType !== 'video') {
-      await updateMediaTaskById(taskId, {
-        status: 'translating',
-        targetLang,
-        progress: 70,
-      });
-
-      const translatedSrtItems = await processor.translateSrtItems(
-        srtItems,
-        targetLang
-      );
-      const translatedSrtContent =
-        processor.srtItemsToString(translatedSrtItems);
-      const translatedSrtFileName = `translated-${taskId}-${targetLang}.srt`;
-      const translatedSrtUrl = await processor.uploadSrtFile(
-        translatedSrtContent,
-        translatedSrtFileName
-      );
-
-      await updateMediaTaskById(taskId, {
-        translatedSrtUrl,
-        progress: 90,
-      });
-    }
-
-    // Handle video download if requested (TikTok only)
-    if (outputType === 'video' && platform === 'tiktok') {
-      const videoBuffer = await processor.downloadTikTokVideo(url);
-      const videoFileName = `video-${taskId}.mp4`;
-      const videoUrl = await processor.uploadVideoFile(
-        videoBuffer,
-        videoFileName
-      );
-
-      await updateMediaTaskById(taskId, {
-        resultVideoUrl: videoUrl,
-        progress: 95,
-      });
-    }
-
-    // Mark as completed
+    // Step 4: Mark as extracted (ready for translation)
     await updateMediaTaskById(taskId, {
-      status: 'completed',
+      status: 'extracted',
       progress: 100,
+      videoUrlInternal: videoUrlInternal,
+      expiresAt: expiresAt,
     });
   } catch (error: any) {
-    console.error('Media processing error:', error);
-
-    // Update task as failed
+    console.error('Media task processing failed:', error);
+    // Get task to retrieve creditId for refund
+    const failedTask = await findMediaTaskById(taskId);
     await updateMediaTaskById(taskId, {
       status: 'failed',
-      errorMessage: error.message || 'Unknown error',
+      errorMessage: error.message || 'Unknown error occurred',
+      progress: 0,
+      creditId: failedTask?.creditId || null, // Ensure creditId is passed for refund
     });
-
-    // Refund credits through ai_task
-    await refundMediaTaskCredits(taskId);
   }
 }
 
 /**
- * Refund credits for failed media task
- * Credits are refunded through the associated ai_task record
+ * POST /api/media/submit
+ * Submit a new media extraction task
  */
-async function refundMediaTaskCredits(mediaTaskId: string) {
+export async function POST(request: NextRequest) {
   try {
-    const { findAITaskById, updateAITaskById } = await import(
-      '@/shared/models/ai_task'
-    );
-    const { AITaskStatus } = await import('@/extensions/ai');
+    const body = await request.json();
+    const { url, outputType, targetLang } = body;
 
-    // Find associated ai_task by mediaTaskId in taskResult
-    // Search for ai_task where taskResult contains the mediaTaskId
-    const allAiTasks = await db()
-      .select()
-      .from(aiTask)
-      .where(eq(aiTask.mediaType, 'video_media'));
-
-    type AiTaskSelect = typeof aiTask.$inferSelect;
-    const aiTasks = allAiTasks.filter((task: AiTaskSelect) => {
-      if (!task.taskResult) return false;
-      try {
-        const result = JSON.parse(task.taskResult);
-        return result.mediaTaskId === mediaTaskId;
-      } catch {
-        return false;
-      }
-    });
-
-    if (aiTasks.length === 0) {
-      console.warn(`No ai_task found for media_task ${mediaTaskId}`);
-      return;
+    // Validation
+    if (!url || typeof url !== 'string') {
+      return respErr('URL is required');
     }
 
-    const aiTaskRecord = aiTasks[0];
+    // Validate URL format
+    const isValidUrl =
+      url.includes('youtube.com') ||
+      url.includes('youtu.be') ||
+      url.includes('tiktok.com') ||
+      url.includes('vm.tiktok.com');
 
-    // Update ai_task status to failed, which will trigger credit refund
-    await updateAITaskById(aiTaskRecord.id, {
-      status: AITaskStatus.FAILED,
-      creditId: aiTaskRecord.creditId,
+    if (!isValidUrl) {
+      return respErr('Invalid URL. Please provide a YouTube or TikTok URL.');
+    }
+
+    // Validate output type
+    if (outputType && outputType !== 'subtitle' && outputType !== 'video') {
+      return respErr('Invalid output type. Must be "subtitle" or "video".');
+    }
+
+    // Both TikTok and YouTube support video download now
+    // No need to restrict video download to TikTok only
+
+    // Get current user
+    const currentUser = await getUserInfo();
+    if (!currentUser) {
+      return respErr('no auth, please sign in');
+    }
+
+    // Calculate required credits
+    // Video download only: 15 credits (no subtitle extraction charge)
+    // Subtitle extraction only: 10 credits
+    let requiredCredits = outputType === 'video' ? 15 : 10;
+
+    // Check plan limits (including free trial availability)
+    const planLimitsCheck = await checkAllPlanLimits({
+      userId: currentUser.id,
+      outputType: outputType || 'subtitle',
     });
-  } catch (refundError: any) {
-    console.error('Failed to refund credits:', refundError);
-    // Don't throw - we've already marked the task as failed
+
+    // If there are blocking errors, return them
+    if (!planLimitsCheck.allowed) {
+      return respErr(planLimitsCheck.errors.join('; '));
+    }
+
+    // Check credits BEFORE creating task (immediate feedback)
+    const remainingCredits = await getRemainingCredits(currentUser.id);
+    
+    // Determine if we should use free trial
+    // Use free trial if:
+    // 1. Free trial is available AND
+    // 2. User doesn't have enough credits OR user explicitly wants to use free trial
+    const useFreeTrial = planLimitsCheck.freeTrialAvailable && remainingCredits < requiredCredits;
+
+    // If not using free trial and credits are insufficient, return error
+    if (!useFreeTrial && remainingCredits < requiredCredits) {
+      return respErr(
+        `Insufficient credits. Required: ${requiredCredits}, Available: ${remainingCredits}`
+      );
+    }
+
+    // Create media task
+    const taskId = getUuid();
+    const newTask = {
+      id: taskId,
+      userId: currentUser.id,
+      platform: url.includes('tiktok') ? 'tiktok' : 'youtube',
+      videoUrl: url,
+      outputType: outputType || 'subtitle',
+      targetLang: targetLang || null,
+      status: 'pending' as const,
+      progress: 0,
+      isFreeTrial: useFreeTrial, // Mark as free trial if applicable
+    };
+
+    // Create task and consume credits (if not free trial)
+    if (useFreeTrial) {
+      // Create task without consuming credits
+      await createMediaTask(newTask, 0);
+      
+      // Update free trial count
+      const limits = await getUserPlanLimits(currentUser.id);
+      const currentFreeTrialUsed = limits.freeTrialUsed || 0;
+      
+      await db()
+        .update(user)
+        .set({ freeTrialUsed: currentFreeTrialUsed + 1 })
+        .where(eq(user.id, currentUser.id));
+    } else {
+      // Create task and consume credits (in transaction)
+      await createMediaTask(newTask, requiredCredits);
+    }
+
+    // Start async processing (don't await - let it run in background)
+    // Note: In serverless environments, background tasks may be terminated
+    // Frontend will poll /api/media/status to check task progress
+    processMediaTask(
+      taskId,
+      url,
+      outputType || 'subtitle',
+      currentUser.id
+    ).catch(async (error) => {
+      console.error('Background task failed:', error);
+      // Update task status to failed if background task fails
+      // Get task to retrieve creditId for refund
+      const failedTask = await findMediaTaskById(taskId);
+      await updateMediaTaskById(taskId, {
+        status: 'failed',
+        errorMessage: error.message || 'Background processing failed',
+        progress: 0,
+        creditId: failedTask?.creditId || null, // Ensure creditId is passed for refund
+      }).catch((updateError) => {
+        console.error('Failed to update task status:', updateError);
+      });
+    });
+
+    // Immediately return task ID
+    return respData({
+      taskId: taskId,
+      message: 'Task submitted successfully',
+    });
+  } catch (error: any) {
+    console.error('Media submit failed:', error);
+    return respErr(error.message || 'Failed to submit media task');
   }
 }
-

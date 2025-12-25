@@ -21,7 +21,7 @@ export default async function PricingPage({
 }) {
   return (
     <>
-      <Pricing pricing={pricing} currentSubscription={currentSubscription} />
+      <Pricing pricing={pricing} currentSubscription={currentSubscription} locale={locale} />
       {faq && <FAQ faq={faq} />}
       {testimonials && <Testimonials testimonials={testimonials} />}
     </>
